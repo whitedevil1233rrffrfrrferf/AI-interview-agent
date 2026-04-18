@@ -1,0 +1,95 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Frontend Dependencies
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
+
+# Backend Dependencies
+/back-end/venv/
+/back-end/env/
+/back-end/.venv/
+
+# Testing
+/coverage
+.pytest_cache/
+.coverage
+
+# Next.js
+/frontend/.next/
+/frontend/out/
+/frontend/dist/
+
+# Production builds
+/build
+/dist
+
+# Misc & OS
+.DS_Store
+*.pem
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.sublime-workspace
+.sublime-project
+*.iml
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+/frontend/next-env.d.ts
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+*.whl
+*.dist-info/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+site-packages/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# API Keys & Secrets
+.env*.local
+secrets/
