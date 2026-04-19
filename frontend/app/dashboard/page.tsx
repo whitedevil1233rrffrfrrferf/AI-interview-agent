@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { getToken } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { useRequireAuth } from "@/lib/useRequireAuth";
 
 export default function Dashboard() {
   const [role, setRole] = useState("backend");
   const [difficulty, setDifficulty] = useState("easy");
   const router = useRouter();
 
+  const isAuthed = useRequireAuth();
+  if (!isAuthed) return null;
   const startInterview = async () => {
-    const token = getToken();
-
+    
     const res = await api.startInterview( role, difficulty);
 
     localStorage.setItem("interview_id", res.interview_id);

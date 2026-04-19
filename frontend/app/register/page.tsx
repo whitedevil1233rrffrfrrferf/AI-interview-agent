@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { apiRequest } from "@/lib/api";
+import { api } from "@/lib/api";
 import { RegisterRequest } from "@/types/auth";
 import { useRouter } from "next/navigation";
 
@@ -22,7 +22,7 @@ export default function RegisterPage() {
 
   const handleRegister = async () => {
     try {
-      await apiRequest("/auth/register", "POST", form);
+      await api("/auth/register", "POST", form);
 
       alert("Registered successfully!");
       router.push("/login");
