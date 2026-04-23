@@ -5,6 +5,8 @@ from schemas.interview_schema import StartInterviewRequest, StartInterviewRespon
 from services.interview_service import start_interview_service
 from infrastructure.db import get_db
 from utils.auth_utils import get_current_user
+from services.interview_service import get_interview_history
+
 
 router = APIRouter(prefix="/interview", tags=["Interview"])
 
@@ -23,3 +25,10 @@ def start_interview(
     )
 
     return result
+
+@router.get("/history")
+def get_history(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return get_interview_history(db, current_user)    

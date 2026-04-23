@@ -15,3 +15,13 @@ def create_interview(db: Session, user_id: str, role: str, difficulty: str):
 
 def get_interview_by_id(db: Session, interview_id: int):
     return db.query(Interview).filter(Interview.id == interview_id).first()
+
+## get all user interviews ordered by created_at desc
+
+def get_user_interviews(db: Session, user_email: str):
+    return (
+        db.query(Interview)
+        .filter(Interview.user_id == user_email)
+        .order_by(Interview.created_at.desc())
+        .all()
+    )    

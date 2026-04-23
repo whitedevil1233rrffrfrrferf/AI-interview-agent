@@ -41,4 +41,13 @@ export const api = {
     });
     return res.json();
   },
+  getReport: async (interview_id: number) => {
+    const res = await fetch(
+      `${BASE_URL}/interview/${interview_id}/report`,
+      {
+        headers: getHeaders(),
+      }
+    );
+    return res.json();
+  },
 };

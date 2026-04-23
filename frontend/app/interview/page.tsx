@@ -16,9 +16,7 @@ export default function InterviewPage() {
   const router = useRouter();
 
   const isAuthed = useRequireAuth();
-   
-  if (!isAuthed) return null;
-  
+
   useEffect(() => {
     const q = localStorage.getItem("question");
     const id = localStorage.getItem("interview_id");
@@ -26,6 +24,8 @@ export default function InterviewPage() {
     if (q) setQuestion(q);
     if (id) setInterviewId(Number(id));
   }, []);
+
+  if (!isAuthed) return null;
 
   const submitAnswer = async () => {
     if (!interviewId || !answer.trim()) return;
