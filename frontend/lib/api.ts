@@ -19,7 +19,17 @@ export const api = {
     });
     return res.json();
   },
+  getCurrentUser: async () => {
+    const res = await fetch(`${BASE_URL}/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
 
+  if (!res.ok) throw new Error("Failed");
+
+  return res.json();
+  },
   startInterview: async ( role: string, difficulty: string) => {
     const res = await fetch(`${BASE_URL}/interview/start`, {
       method: "POST",
@@ -48,6 +58,32 @@ export const api = {
         headers: getHeaders(),
       }
     );
+    return res.json();
+  },
+  getInterviewHistory: async () => {
+    const res = await fetch(`${BASE_URL}/interview/history`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch history");
+
+    return res.json();
+  },
+
+  uploadResume: async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch(`${BASE_URL}/resume/upload`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // no content-type
+      },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Upload failed");
+
     return res.json();
   },
 };
