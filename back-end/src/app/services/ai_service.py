@@ -4,6 +4,8 @@ from groq import Groq
 from dotenv import load_dotenv
 from utils.question_fallback import generate_first_question
 from repository.resume import get_latest_resume
+from rag.rag import load_pdf, split_docs, create_vectorstore, retrieve_context
+
 
 load_dotenv()
 
@@ -103,24 +105,22 @@ def generate_question_with_ai(
         raise
 
 
-def get_first_question(db, user_id: str, role: str, difficulty: str) -> str:
+def get_first_question(db, user_id: str, role: str, difficulty: str,resume_path: str = None) -> str:
     try:
-        resume = get_latest_resume(db, user_id)
+        if resume_path:
+            docs = load_pdf(resume_path)
+            chunks = split_docs(docs)
+            # STEP 3 + 4: store embeddings
+            create_vectorstore(chunks)
 
-        # Use resume only if valid
-        if resume and resume.content and len(resume.content.strip()) > 50:
-            return generate_question_with_ai(
-                role,
-                difficulty,
-                resume_text=resume.content
-            )
+            # STEP 5: retrieve relevant context
+            context = retrieve_context(f"{role} {difficulty} interview")
 
-        # No resume → normal AI
-        return generate_question_with_ai(
-            role,
-            difficulty,
-            resume_text=None
-        )
+            print("\n===== RETRIEVED CONTEXT =====")
+            print(context[:1000])
+
+        # fallback for now
+        return generate_question_with_ai(role, difficulty, resume_text=context if resume_path else None)
 
     except Exception:
         return generate_first_question(role, difficulty)       

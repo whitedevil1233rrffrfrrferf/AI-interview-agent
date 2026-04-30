@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      target: Backend
+    container_name: backend
+    ports:
+      - "8000:8000"
+    working_dir: /app/src/app
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./back-end/.env
+
+  frontend:
+    build:
+      context: .
+      target: Frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+

@@ -9,6 +9,7 @@ import { useRequireAuth } from "@/lib/useRequireAuth";
 export default function Dashboard() {
   const [role, setRole] = useState("backend");
   const [difficulty, setDifficulty] = useState("easy");
+  const [resume, setResume] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -17,18 +18,18 @@ export default function Dashboard() {
   if (!isAuthed) return null;
 
   const startInterview = async () => {
-    setLoading(true);
-    try {
-      const res = await api.startInterview(role, difficulty);
-      localStorage.setItem("interview_id", res.interview_id);
-      localStorage.setItem("question", res.question);
-      router.push("/interview");
-    } catch (err) {
-      console.error("Failed to start interview", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const res = await api.startInterview(role, difficulty, resume); // 👈 pass resume
+    localStorage.setItem("interview_id", res.interview_id);
+    localStorage.setItem("question", res.question);
+    router.push("/interview");
+  } catch (err) {
+    console.error("Failed to start interview", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
@@ -76,6 +77,26 @@ export default function Dashboard() {
                 <option value="medium">Medium</option>
                 <option value="hard">Hard</option>
               </select>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Upload Resume (Optional)
+                </label>
+
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setResume(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full border border-gray-300 rounded-lg p-2"
+                />
+
+                <p className="text-gray-500 text-xs mt-2">
+                  Upload your resume to get personalized questions
+                </p>
+              </div>
               <p className="text-gray-500 text-xs mt-2">Start easy and progress to harder questions</p>
             </div>
           </div>

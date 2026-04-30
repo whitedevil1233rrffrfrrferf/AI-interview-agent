@@ -1,0 +1,12 @@
+For running back-end
+
+docker run \
+  --env-file .env \
+  -p 8000:8000 \
+  -v $(pwd):/app \
+  backend-test:latest
+
+For running front-end
+
+docker run -p 3000:3000 frontend-app
+

@@ -30,12 +30,29 @@ export const api = {
 
   return res.json();
   },
-  startInterview: async ( role: string, difficulty: string) => {
+  
+  startInterview: async (
+    role: string,
+    difficulty: string,
+    resume?: File | null
+  ) => {
+    const formData = new FormData();
+
+    formData.append("role", role);
+    formData.append("difficulty", difficulty);
+
+    if (resume) {
+      formData.append("resume", resume);
+    }
+
     const res = await fetch(`${BASE_URL}/interview/start`, {
       method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({ role, difficulty }),
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // no Content-Type
+      },
+      body: formData,
     });
+
     return res.json();
   },
 

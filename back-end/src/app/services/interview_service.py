@@ -5,10 +5,10 @@ from services.ai_service import get_first_question
 
 
 
-def start_interview_service(db, user_id: str, role: str, difficulty: str):
+def start_interview_service(db, user_id: str, role: str, difficulty: str,resume_path: str = None):
     interview = create_interview(db, user_id, role, difficulty)
 
-    question = get_first_question(db, user_id, role, difficulty)
+    question = get_first_question(db, user_id, role, difficulty,resume_path)
 
     return {
         "interview_id": interview.id,
