@@ -1,4 +1,4 @@
-FROM node:20-alpine AS Frontend
+FROM node:20-alpine AS frontend
 
 WORKDIR /app
 
@@ -11,18 +11,18 @@ EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
 
-FROM python:3.11-slim AS Backend
+FROM python:3.11-slim AS backend
 
 WORKDIR /app
 
-COPY ./back-end/requirements.txt .
+COPY ./requirements.txt .
 
 RUN pip install  -r requirements.txt
 
-COPY . .
+COPY ./back-end/ .
 
 # THIS IS THE KEY FIX
-WORKDIR /app/back-end/src/app
+WORKDIR /app/src/app
 
 EXPOSE 8000
 

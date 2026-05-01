@@ -1,24 +1,21 @@
-version: "3.9"
-
 services:
   backend:
     build:
       context: .
-      target: Backend
-    container_name: backend
+      target: backend
+    container_name: ai-backend
     ports:
       - "8000:8000"
-    working_dir: /app/src/app
     volumes:
-      - ./backend:/app
+      - ./back-end:/app
     env_file:
       - ./back-end/.env
 
   frontend:
     build:
       context: .
-      target: Frontend
-    container_name: frontend
+      target: frontend
+    container_name: ai-frontend
     ports:
       - "3000:3000"
 
