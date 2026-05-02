@@ -20,3 +20,5 @@ class InterviewHistoryResponse(BaseModel):
 
     class Config:
         from_attributes = True    
+
+     

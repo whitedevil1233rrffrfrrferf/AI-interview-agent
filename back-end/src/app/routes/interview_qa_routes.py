@@ -26,9 +26,9 @@ def submit_answer(
 
     result = submit_answer_service(
         db,
-        interview,
-        request.question,
-        request.answer
+        interview_id=request.interview_id,
+        question=request.question,
+        answer=request.answer
     )
 
     return result

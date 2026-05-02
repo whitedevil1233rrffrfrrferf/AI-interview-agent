@@ -53,6 +53,7 @@ def generate_interview_report(db: Session, interview_id: int):
     return InterviewReport(
         interview_id=interview_id,
         overall_score=overall_score,
+
         total_questions=len(answers),
         average_score=average_score,
         

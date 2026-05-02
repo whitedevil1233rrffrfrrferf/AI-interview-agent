@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class SubmitAnswerRequest(BaseModel):
     interview_id: int
@@ -7,6 +9,12 @@ class SubmitAnswerRequest(BaseModel):
 
 
 class SubmitAnswerResponse(BaseModel):
-    score: int
-    feedback: str
-    next_question: str
+    completed: bool
+
+    # ongoing case
+    score: Optional[int] = None
+    feedback: Optional[str] = None
+    next_question: Optional[str] = None
+
+    # completed case
+    overall_score: Optional[float] = None   

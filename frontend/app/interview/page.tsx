@@ -13,6 +13,8 @@ export default function InterviewPage() {
   const [interviewId, setInterviewId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [overallScore, setOverallScore] = useState<number | null>(null);
   const router = useRouter();
 
   const isAuthed = useRequireAuth();
@@ -37,7 +39,11 @@ export default function InterviewPage() {
         question,
         answer
       );
-
+      if (res.completed) {
+        setCompleted(true);
+        setOverallScore(res.overall_score);
+        return;
+      }
       setScore(res.score);
       setFeedback(res.feedback);
       setQuestion(res.next_question);
@@ -53,7 +59,30 @@ export default function InterviewPage() {
   const handleEndInterview = () => {
     router.push("/dashboard");
   };
+   if (completed) {
+            return (
+              <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+                <div className="bg-white p-10 rounded-lg shadow-lg text-center max-w-lg">
+                  <h1 className="text-3xl font-bold mb-4">Interview Completed 🎉</h1>
 
+                  <div className="text-6xl font-bold text-indigo-600 mb-4">
+                    {overallScore}/10
+                  </div>
+
+                  <p className="text-gray-600 mb-6">
+                    Great job! Here's your overall performance.
+                  </p>
+
+                  <button
+                    onClick={() => router.push("/dashboard")}
+                    className="bg-indigo-600 text-white px-6 py-3 rounded-lg"
+                  >
+                    Go to Dashboard
+                  </button>
+                </div>
+              </div>
+            );
+          }
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
       <div className="max-w-4xl mx-auto">
@@ -113,7 +142,7 @@ export default function InterviewPage() {
               </div>
             </div>
           )}
-
+         
           {/* Action Buttons */}
           <div className="flex gap-4">
             <button

@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from utils.question_fallback import generate_first_question
 from repository.resume import get_latest_resume
 from rag.rag import load_pdf, split_docs, create_vectorstore, retrieve_context
+from repository.interview_qa_repo import get_questions_by_interview
 
 
 load_dotenv()
@@ -124,3 +125,40 @@ def get_first_question(db, user_id: str, role: str, difficulty: str,resume_path:
 
     except Exception:
         return generate_first_question(role, difficulty)       
+    
+def get_next_question(db, interview_id: int, role: str):
+    try:
+        # 1. Get interview history
+        history = get_questions_by_interview(db, interview_id)
+
+        # 2. Extract scores
+        scores = [q.score for q in history if q.score is not None]
+        avg_score = sum(scores) / len(scores) if scores else 5
+
+        # 3. Adaptive difficulty
+        if avg_score >= 8:
+            difficulty = "hard"
+        elif avg_score >= 5:
+            difficulty = "medium"
+        else:
+            difficulty = "easy"
+
+        # 4. Build conversation context (VERY IMPORTANT)
+        conversation = "\n".join([
+            f"Q: {q.question}\nA: {q.answer}"
+            for q in history[-3:]  # last 3 only (avoid token explosion)
+        ])
+
+        # 5. Try resume RAG context (if available in DB or cache)
+        resume_context = retrieve_context(role)
+
+        # 6. Generate next question using AI
+        return generate_question_with_ai(
+            role=role,
+            difficulty=difficulty,
+            resume_text=f"{resume_context}\n\n{conversation}"
+        )
+
+    except Exception as e:
+        print("[NEXT QUESTION ERROR]", str(e))
+        return generate_first_question(role, "easy")    
