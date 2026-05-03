@@ -6,6 +6,9 @@ from utils.question_fallback import generate_first_question
 from repository.resume import get_latest_resume
 from rag.rag import load_pdf, split_docs, create_vectorstore, retrieve_context
 from repository.interview_qa_repo import get_questions_by_interview
+from services.cache_service import get_cache, set_cache
+
+import hashlib
 
 
 load_dotenv()
@@ -115,7 +118,7 @@ def get_first_question(db, user_id: str, role: str, difficulty: str,resume_path:
             create_vectorstore(chunks)
 
             # STEP 5: retrieve relevant context
-            context = retrieve_context(f"{role} {difficulty} interview")
+            context = get_resume_context_cached(role, user_id)
 
             print("\n===== RETRIEVED CONTEXT =====")
             print(context[:1000])
@@ -162,3 +165,23 @@ def get_next_question(db, interview_id: int, role: str):
     except Exception as e:
         print("[NEXT QUESTION ERROR]", str(e))
         return generate_first_question(role, "easy")    
+    
+def get_resume_context_cached(role: str, user_id: str):
+    cache_key = f"resume:{user_id}:{role}"
+
+    cached = get_cache(cache_key)
+    if cached:
+        print("⚡ RESUME CACHE HIT")
+        return cached
+
+    print("❌ RESUME CACHE MISS")
+
+    # Better semantic query
+    query = f"{role} concepts from candidate resume"
+
+    context = retrieve_context(query)
+
+    set_cache(cache_key, context, ttl=3600)
+
+    return context
+    
